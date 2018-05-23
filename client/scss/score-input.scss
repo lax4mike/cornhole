@@ -1,0 +1,35 @@
+.score-input__btns {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-gap: 12px;
+}
+
+.score-input__title {
+  display: flex;
+  padding: 8px 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+.score-input__color {
+  display: inline-block;
+  margin-left: 8px;
+}
+
+.score-input__btn {
+  display: flex;
+  align-items: ceneter;
+  justify-content: center;
+
+  padding: 8px 12px;
+
+  font-size: 28px;
+
+  background-color: #eee;
+  border-radius: 6px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #ddd;
+  }
+}
