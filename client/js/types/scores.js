@@ -47,10 +47,8 @@ export const getTotalScore = (teamId, scores) =>
 
 // getTotalScores :: String -> [Scores] -> [Number]
 export const getTotalScores = (scores) =>
-  R.compose(
-    R.tail, // remove initial 0
-    R.scan(scoreReducer, 0)
-  )(scores);
+  R.scan(scoreReducer, 0)(scores);
+
 
 
 // const score1 = scoreTeam1(5, initialScores);

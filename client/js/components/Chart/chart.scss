@@ -1,5 +1,16 @@
+@import "../../../scss/_variables.scss";
+
 .chart {
   height: 300px;
   width: 500px;
   background-color: #ecf0f1;
+}
+
+
+.team1-path {
+  stroke: $purple-8e44ad;
+}
+
+.team2-path {
+  stroke: $orange-e67e22;
 }

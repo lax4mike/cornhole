@@ -1,11 +1,11 @@
 import React from "react";
 import R from "ramda";
 
-import VictoryChart from "./Chart/VictoryChart.jsx";
+import Chart from "./Chart/Chart.jsx";
 import Modal from "./Modal/Modal.jsx";
 
 import {
-  initialScores, TEAM1, TEAM2, getTotalScore, addScore
+  initialScores, TEAM1, TEAM2, getTotalScore, addScore, scoreNone
 } from "../types/scores.js";
 
 const teamClass = (teamId) => {
@@ -39,6 +39,15 @@ export default class App extends React.Component {
     });
   }
 
+  scoreNone = () => {
+    const { scores } = this.state;
+
+    this.setState({
+      scores: scoreNone(scores),
+      scoringTeam: null
+    });
+  }
+
   renderScoreBtn = (i) => {
     return (
       <div key={i} className="score-input__btn" onClick={() => this.scoreForTeam(i+1)}>
@@ -60,18 +69,23 @@ export default class App extends React.Component {
 
     return (
       <div className="container">
-        <VictoryChart {...{ scores }} />
+        <Chart {...{ scores }} />
 
         <div className="teams">
           <div className="team" onClick={() => this.enterScore(TEAM1)}>
             <div className="team__color team--1"></div>
             {getTotalScore(TEAM1, scores)}
           </div>
+          <div className="team" onClick={this.scoreNone}>
+            <div className="team__color team--none">no score</div>
+          </div>
           <div className="team" onClick={() => this.enterScore(TEAM2)}>
             <div className="team__color team--2"></div>
             {getTotalScore(TEAM2, scores)}
           </div>
         </div>
+
+
 
         <Modal isOpen={scoringTeam !== null} onClose={this.closeModal} title={modalTitle}>
           <div className="score-input">
