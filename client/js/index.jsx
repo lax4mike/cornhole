@@ -3,7 +3,8 @@ import ReactDom from "react-dom";
 
 import App from "./components/App.jsx";
 
-const ws = new WebSocket("ws://localhost:3030");
+// hostname so it works on localhost and mikelambert.me
+const ws = new WebSocket(`ws://${window.location.hostname}:3030`);
 
 
 const onScore = (scores) => {
