@@ -10,8 +10,8 @@ module.exports = function(taskName, userConfig){
     // use babel to start the server files
     // https://www.youtube.com/watch?v=Xb_0awoShR8 --inspect for node debugging
     execMap: {
-      js: "babel-node --inspect",
-      jsx: "babel-node --inspect"
+      js: "babel-node --inspect --plugins transform-es2015-modules-commonjs",
+      jsx: "babel-node --inspect --plugins transform-es2015-modules-commonjs"
     }
     /**
      * script: path.resolve(serverDir, "server.js"),

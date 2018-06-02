@@ -14,3 +14,10 @@
 .team2-path {
   stroke: $orange-e67e22;
 }
+
+
+.axis--y {
+  .is-hidden {
+    display: none;
+  }
+}

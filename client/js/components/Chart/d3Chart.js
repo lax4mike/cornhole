@@ -99,12 +99,14 @@ function render() {
   const { width, height, g, scores } = state;
 
   const xScale = scaleLinear()
-    .domain([0, scores.team1.length])
+    .domain([0, scores[TEAM1].length])
     .rangeRound([0, width]);
 
   const yScale = scaleLinear()
     .domain([0, 21])
     .range([height, 0]);
+
+  const rounds = xScale.domain()[1];
 
   const lineGenerator = line()
     .x((d, i) => xScale(i))
@@ -120,15 +122,17 @@ function render() {
     .duration(1000)
     .attr("d", lineGenerator(getTotalScores(scores[TEAM2])));
 
-
   g.select(".axis--x")
-    .call(axisBottom(xScale));
+    .call(
+      axisBottom(xScale)
+        .ticks(rounds > 10 ? 10 : rounds)
+    );
 
   g.select(".axis--y")
-    .call(
-      axisLeft(yScale)
-        .ticks(21)
-    );
+    .call(axisLeft(yScale).ticks(21));
+
+  g.selectAll(".axis--y .tick")
+    .attr("class", d => (d === 11 || d === 21) ? "" : "is-hidden");
 }
 
 

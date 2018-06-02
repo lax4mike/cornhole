@@ -1,11 +1,12 @@
 import React from "react";
 import R from "ramda";
+import { func } from "prop-types";
 
 import Chart from "./Chart/Chart.jsx";
 import Modal from "./Modal/Modal.jsx";
 
 import {
-  initialScores, TEAM1, TEAM2, getTotalScore, addScore, scoreNone
+  TEAM1, TEAM2, getTotalScore, addScore, scoreNone, scoresShape
 } from "../types/scores.js";
 
 const teamClass = (teamId) => {
@@ -17,8 +18,12 @@ const teamClass = (teamId) => {
 
 export default class App extends React.Component {
 
+  static propTypes = {
+    scores: scoresShape.isRequired,
+    onScore: func.isRequired
+  }
+
   state = {
-    scores: initialScores,
     scoringTeam: null // null or teamId
   }
 
@@ -31,19 +36,22 @@ export default class App extends React.Component {
   }
 
   scoreForTeam = (n) => {
-    const { scoringTeam, scores } = this.state;
+    const { scoringTeam } = this.state;
+    const { onScore, scores  } = this.props;
+
+    onScore(addScore(scoringTeam, n, scores));
 
     this.setState({
-      scores: addScore(scoringTeam, n, scores),
       scoringTeam: null
     });
   }
 
   scoreNone = () => {
-    const { scores } = this.state;
+    const { scores, onScore } = this.props;
+
+    onScore(scoreNone(scores));
 
     this.setState({
-      scores: scoreNone(scores),
       scoringTeam: null
     });
   }
@@ -58,7 +66,8 @@ export default class App extends React.Component {
 
   render = () => {
 
-    const { scores, scoringTeam } = this.state;
+    const { scores } = this.props;
+    const { scoringTeam } = this.state;
 
     const modalTitle = (
       <div className="score-input__title">

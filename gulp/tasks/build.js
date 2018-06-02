@@ -3,6 +3,7 @@ const quench                = require("../quench/quench.js");
 const createCopyTask        = require("../quench/createCopyTask.js");
 const createJsTask          = require("../quench/createJsTask.js");
 const createCssTask         = require("../quench/createCssTask.js");
+const createNodemonTask     = require("../quench/createNodemonTask.js");
 const createBrowserSyncTask = require("../quench/createBrowserSyncTask.js");
 
 
@@ -10,6 +11,7 @@ module.exports = function buildTask(projectRoot) {
 
   const buildDir = `${projectRoot}/build`;
   const clientDir = `${projectRoot}/client`;
+  const serverDir = `${projectRoot}/server`;
 
   return function(){
 
@@ -61,7 +63,16 @@ module.exports = function buildTask(projectRoot) {
 
 
     createBrowserSyncTask("build-browser-sync", {
-      server: buildDir
+      proxy: "http://localhost:3030",
+      files: [
+        `${buildDir}/**`
+      ]
+    });
+
+
+    createNodemonTask("build-nodemon", {
+      script: `${serverDir}/server.js`,
+      watch: [ serverDir ]
     });
 
 
@@ -72,7 +83,11 @@ module.exports = function buildTask(projectRoot) {
     ];
 
     if (quench.isWatching()){
-      return runSequence(buildTasks, "build-browser-sync");
+      return runSequence(
+        buildTasks,
+        "build-nodemon",
+        "build-browser-sync"
+      );
     }
     else {
       return runSequence(buildTasks);
