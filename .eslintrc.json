@@ -213,7 +213,7 @@
     "guard-for-in": 0,
     "handle-callback-err": 0,
     "id-length": 0,
-    "indent": [1, 2,  { "SwitchCase": 1 }],
+    "indent": [1, 2,  { "SwitchCase": 1, "flatTernaryExpressions": true }],
     "init-declarations": 0,
     "jsx-quotes": [1, "prefer-double"],
     "key-spacing": [0, { "beforeColon": false, "afterColon": true }],

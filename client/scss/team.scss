@@ -1,9 +1,17 @@
-@import "../../../scss/_variables.scss";
+@import "./_variables.scss";
 
 .teams {
   display: flex;
   align-items: center;
   padding: 12px;
+
+  &.has-winner {
+    align-items: flex-start;
+
+    .team {
+      width: 175px;
+    }
+  }
 }
 
 .team {
@@ -16,10 +24,11 @@
   font-size: 48px;
 
   border-radius: 6px;
-  cursor: pointer;
 
-  &:hover {
+  // disable hover states if there is a winner
+  .teams:not(.has-winner) &:hover {
     background-color: #eee;
+    cursor: pointer;
   }
 
 }
@@ -45,4 +54,5 @@
     line-height: 24px;
     text-align: center;
   }
+
 }

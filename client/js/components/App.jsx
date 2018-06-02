@@ -1,12 +1,13 @@
 import React from "react";
 import R from "ramda";
 import { func } from "prop-types";
+import classNames from "classnames";
 
 import Chart from "./Chart/Chart.jsx";
 import Modal from "./Modal/Modal.jsx";
 
 import {
-  TEAM1, TEAM2, getTotalScore, addScore, scoreNone, scoresShape
+  TEAM1, TEAM2, getTotalScore, addScore, scoreNone, scoresShape, initialScores
 } from "../types/scores.js";
 
 const teamClass = (teamId) => {
@@ -15,6 +16,7 @@ const teamClass = (teamId) => {
     [TEAM2]: "team--2"
   }[teamId];
 };
+
 
 export default class App extends React.Component {
 
@@ -56,10 +58,19 @@ export default class App extends React.Component {
     });
   }
 
+  resetScores = () => {
+    const { onScore } = this.props;
+
+    onScore(initialScores);
+  }
+
+  // score buttons in modal
   renderScoreBtn = (i) => {
     return (
-      <div key={i} className="score-input__btn" onClick={() => this.scoreForTeam(i+1)}>
-        {i + 1}
+      <div key={i} className="score-input__btn"
+        onClick={() => this.scoreForTeam(i)}
+      >
+        {i}
       </div>
     );
   }
@@ -76,30 +87,51 @@ export default class App extends React.Component {
       </div>
     );
 
+    const hasWon = (teamId, scores) => getTotalScore(scores[teamId]) === 21;
+
+    const winner =
+      (hasWon(TEAM1, scores)) ? TEAM1 :
+      (hasWon(TEAM2, scores)) ? TEAM2 :
+      null;
+
+    const winnerText = <div className="winner">Winner!</div>;
+
     return (
       <div className="container">
         <Chart {...{ scores }} />
 
-        <div className="teams">
-          <div className="team" onClick={() => this.enterScore(TEAM1)}>
+        <div className={classNames("teams", { "has-winner": winner})}>
+          <div className="team" onClick={() => !winner && this.enterScore(TEAM1)}>
             <div className="team__color team--1"></div>
-            {getTotalScore(TEAM1, scores)}
+            {getTotalScore(scores[TEAM1])}
+            {winner === TEAM1 && winnerText}
           </div>
-          <div className="team" onClick={this.scoreNone}>
-            <div className="team__color team--none">no score</div>
-          </div>
-          <div className="team" onClick={() => this.enterScore(TEAM2)}>
+
+          {!winner && (
+            <div className="team" onClick={() => !winner && this.scoreNone()}>
+              <div className="team__color team--none">no score</div>
+            </div>
+          )}
+
+          <div className="team" onClick={() => !winner && this.enterScore(TEAM2)}>
             <div className="team__color team--2"></div>
-            {getTotalScore(TEAM2, scores)}
+            {getTotalScore(scores[TEAM2])}
+            {winner === TEAM2 && winnerText}
           </div>
         </div>
+
+        {winner && (
+          <div className="btn" onClick={() => this.resetScores()}>
+            <div className="btn__text">reset</div>
+          </div>
+        )}
 
 
 
         <Modal isOpen={scoringTeam !== null} onClose={this.closeModal} title={modalTitle}>
           <div className="score-input">
             <div className="score-input__btns">
-              {R.range(0, 12).map(this.renderScoreBtn)}
+              {R.range(1, 13).map(this.renderScoreBtn)}
             </div>
           </div>
         </Modal>

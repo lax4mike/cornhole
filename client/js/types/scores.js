@@ -38,14 +38,14 @@ const scoreReducer = (tally, n) => {
 };
 
 
-// getTotalScore :: String -> Scores -> Number
-export const getTotalScore = (teamId, scores) =>
-  R.compose(
-    R.reduce(scoreReducer, 0),
-    R.prop(teamId)
-  )(scores);
+// given an array of a score for each round, tally the final score
+// getTotalScore :: [Number] -> Number
+export const getTotalScore = (scores) =>
+  R.reduce(scoreReducer, 0)(scores);
 
-// getTotalScores :: String -> [Scores] -> [Number]
+// given an array of a score for each round, return an array of the
+// total score for each round
+// getTotalScores :: [Number] -> [Number]
 export const getTotalScores = (scores) =>
   R.scan(scoreReducer, 0)(scores);
 
