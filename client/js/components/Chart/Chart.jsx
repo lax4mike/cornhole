@@ -1,5 +1,5 @@
 import React from "react";
-import d3Chart from "./d3Chart.js";
+import createD3Chart from "./d3Chart.js";
 
 
 import { arrayOf, number, shape } from "prop-types";
@@ -15,19 +15,26 @@ export default class Chart extends React.Component {
     })
   }
 
-  container = React.createRef()
 
   componentDidMount = () => {
-    d3Chart.create({
+    this.d3Chart = createD3Chart({
       el: this.container.current,
       scores: this.props.scores
     });
   }
 
+
   componentDidUpdate = (prevProps, prevState, snapshot) => {
 
-    d3Chart.update(this.props);
+    // only update the viz if the scores have changed
+    if (prevProps.scores !== this.props.scores){
+      this.d3Chart.setState(this.props);
+    }
+
   }
+
+
+  container = React.createRef()
 
   render = () => {
     return (

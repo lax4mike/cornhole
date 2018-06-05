@@ -83,21 +83,24 @@ export default class App extends React.Component {
     const modalTitle = (
       <div className="score-input__title">
         Score for
-        <div className={`score-input__color team__color ${teamClass(scoringTeam)}`}></div>
+        <div className={classNames(
+          "score-input__color", "team__color", teamClass(scoringTeam)
+        )} />
       </div>
     );
 
-    const hasWon = (teamId, scores) => getTotalScore(scores[teamId]) === 21;
+    const hasWon = (teamId) => getTotalScore(scores[teamId]) === 21;
 
     const winner =
-      (hasWon(TEAM1, scores)) ? TEAM1 :
-      (hasWon(TEAM2, scores)) ? TEAM2 :
+      (hasWon(TEAM1)) ? TEAM1 :
+      (hasWon(TEAM2)) ? TEAM2 :
       null;
 
     const winnerText = <div className="winner">Winner!</div>;
 
     return (
       <div className="container">
+
         <Chart {...{ scores }} />
 
         <div className={classNames("teams", { "has-winner": winner})}>
@@ -125,8 +128,6 @@ export default class App extends React.Component {
             <div className="btn__text">reset</div>
           </div>
         )}
-
-
 
         <Modal isOpen={scoringTeam !== null} onClose={this.closeModal} title={modalTitle}>
           <div className="score-input">

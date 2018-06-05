@@ -7,133 +7,110 @@ import "d3-transition";
 
 import { getTotalScores, TEAM1, TEAM2 } from "../../types/scores.js";
 
+export default function createChart(props) {
 
-let state = {};
 
-function setState(newState){
+  let state = {};
 
-  state = R.merge(state, newState);
+  function setState(newState){
 
-  render(newState);
-}
+    state = R.merge(state, newState);
 
-const validateProp = R.curry((props, name) => {
-  if (!props[name]){
-    console.error(`missing ${name}!`, props);
-    return false;
+    render(newState);
   }
-  return true;
-});
 
+  init(props);
 
-const api =  {
+  // called once
+  function init(props){
 
-  create: (props) => {
+    const { el } = props;
 
-    if (!R.all(validateProp(props), ["el", "scores"])){
-      return;
-    }
+    const container = select(el);
+    const dimensions = el.getBoundingClientRect();
 
-    init(props);
+    const svg = container.append("svg")
+      .attr("width", dimensions.width)
+      .attr("height", dimensions.height)
+      .attr("class", "bar");
 
-    return this;
-  },
+    const margin = { top: 20, right: 20, bottom: 40, left: 40 };
+    const width = dimensions.width - margin.left - margin.right;
+    const height = dimensions.height - margin.top - margin.bottom;
 
-  update: (props) => {
-    setState(props);
+    const g = svg.append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    return this;
+    g.append("path")
+      .attr("class", "team1-path")
+      .attr("fill", "none")
+      .attr("stroke-linejoin", "round")
+      .attr("stroke-linecap", "round")
+      .attr("stroke-width", 1.5);
+
+    g.append("path")
+      .attr("class", "team2-path")
+      .attr("fill", "none")
+      .attr("stroke-linejoin", "round")
+      .attr("stroke-linecap", "round")
+      .attr("stroke-width", 1.5);
+
+    g.append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", `translate(0, ${height})`);
+
+    g.append("g")
+      .attr("class", "axis axis--y")
+      .attr("transform", "translate(0, 0)");
+
+    setState({
+      g,
+      width,
+      height,
+      ...props
+    });
   }
-};
 
-function init(props){
-  const { el } = props;
 
-  const container = select(el);
-  const dimensions = el.getBoundingClientRect();
+  function render() {
+    const { width, height, g, scores } = state;
 
-  const svg = container.append("svg")
-    .attr("width", dimensions.width)
-    .attr("height", dimensions.height)
-    .attr("class", "bar");
+    const xScale = scaleLinear()
+      .domain([0, scores[TEAM1].length])
+      .rangeRound([0, width]);
 
-  const margin = { top: 20, right: 20, bottom: 40, left: 40 };
-  const width = dimensions.width - margin.left - margin.right;
-  const height = dimensions.height - margin.top - margin.bottom;
+    const yScale = scaleLinear()
+      .domain([0, 21])
+      .range([height, 0]);
 
-  const g = svg.append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    const rounds = xScale.domain()[1];
 
-  g.append("path")
-    .attr("class", "team1-path")
-    .attr("fill", "none")
-    .attr("stroke-linejoin", "round")
-    .attr("stroke-linecap", "round")
-    .attr("stroke-width", 1.5);
+    const lineGenerator = line()
+      .x((d, i) => xScale(i))
+      .y((d) => yScale(d));
 
-  g.append("path")
-    .attr("class", "team2-path")
-    .attr("fill", "none")
-    .attr("stroke-linejoin", "round")
-    .attr("stroke-linecap", "round")
-    .attr("stroke-width", 1.5);
+    g.select(".team1-path")
+      .transition()
+      .duration(250)
+      .attr("d", lineGenerator(getTotalScores(scores[TEAM1])));
 
-  g.append("g")
-    .attr("class", "axis axis--x")
-    .attr("transform", `translate(0, ${height})`);
+    g.select(".team2-path")
+      .transition()
+      .duration(250)
+      .attr("d", lineGenerator(getTotalScores(scores[TEAM2])));
 
-  g.append("g")
-    .attr("class", "axis axis--y")
-    .attr("transform", "translate(0, 0)");
+    g.select(".axis--x")
+      .call(
+        axisBottom(xScale)
+          .ticks(rounds > 10 ? 10 : rounds)
+      );
 
-  setState({
-    g,
-    width,
-    height,
-    ...props
-  });
+    g.select(".axis--y")
+      .call(axisLeft(yScale).ticks(21));
+
+    g.selectAll(".axis--y .tick")
+      .attr("class", d => (d === 11 || d === 21) ? "" : "is-hidden");
+  }
+
+  return { setState };
 }
-
-
-function render() {
-  const { width, height, g, scores } = state;
-
-  const xScale = scaleLinear()
-    .domain([0, scores[TEAM1].length])
-    .rangeRound([0, width]);
-
-  const yScale = scaleLinear()
-    .domain([0, 21])
-    .range([height, 0]);
-
-  const rounds = xScale.domain()[1];
-
-  const lineGenerator = line()
-    .x((d, i) => xScale(i))
-    .y((d) => yScale(d));
-
-  g.select(".team1-path")
-    .transition()
-    .duration(1000)
-    .attr("d", lineGenerator(getTotalScores(scores[TEAM1])));
-
-  g.select(".team2-path")
-    .transition()
-    .duration(1000)
-    .attr("d", lineGenerator(getTotalScores(scores[TEAM2])));
-
-  g.select(".axis--x")
-    .call(
-      axisBottom(xScale)
-        .ticks(rounds > 10 ? 10 : rounds)
-    );
-
-  g.select(".axis--y")
-    .call(axisLeft(yScale).ticks(21));
-
-  g.selectAll(".axis--y .tick")
-    .attr("class", d => (d === 11 || d === 21) ? "" : "is-hidden");
-}
-
-
-export default api;
