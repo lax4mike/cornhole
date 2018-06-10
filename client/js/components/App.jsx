@@ -99,9 +99,13 @@ export default class App extends React.Component {
     const winnerText = <div className="winner">Winner!</div>;
 
     return (
-      <div className="container">
+      <div className="app">
 
-        <Chart {...{ scores }} />
+        <h2>Cornhole!</h2>
+
+        <div className="app__chart">
+          <Chart {...{ scores }} />
+        </div>
 
         <div className={classNames("teams", { "has-winner": winner})}>
           <div className="team" onClick={() => !winner && this.enterScore(TEAM1)}>

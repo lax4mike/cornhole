@@ -8,16 +8,40 @@
 
 
 .team1-path {
-  stroke: $purple-8e44ad;
+  stroke: $purple-9b59b6;
 }
 
 .team2-path {
-  stroke: $orange-e67e22;
+  stroke: $orange-f39c12;
 }
 
 
-.axis--y {
-  .is-hidden {
+.chart__x-axis,
+.chart__y-axis {
+  font-size: 14px;
+}
+
+.chart__x-axis {
+  line {
+  }
+}
+
+.chart__y-axis {
+
+  .tick {
+
+    line {
+      stroke: #ccc;
+      stroke-dasharray: 5, 5;
+    }
+
+    &.is-hidden {
+      display: none;
+    }
+  }
+
+  .domain {
+    // stroke: #eee;
     display: none;
   }
 }

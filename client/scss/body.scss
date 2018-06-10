@@ -1,4 +1,10 @@
 
 body {
   font-family: "Alegreya", "Trebuchet MS", sans-serif;
+
+  // mobile phones seem to select text alot, prevent that.
+  user-select: none;
+
+  padding: 0;
+  margin: 0;
 }

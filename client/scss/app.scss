@@ -1,0 +1,16 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  padding: 20px;
+}
+
+
+.app__chart {
+  align-self: stretch;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
