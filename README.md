@@ -1,3 +1,3 @@
-## Velir frontend starter
+## Cornhole!
 
 See gulp [readme.md](./gulp/readme.md).
