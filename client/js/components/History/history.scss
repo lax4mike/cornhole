@@ -1,0 +1,50 @@
+@import "../../../scss/_variables.scss";
+
+.history {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.history__score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px;
+
+  // &:hover {
+  //   background-color: #eee;
+  //   cursor: pointer;
+  // }
+
+  &.team1 {
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+
+    .history__dot {
+      background-color: $team-1;
+    }
+  }
+
+  &.team2 {
+    &:before {
+      content: "\00a0"; // &nbsp;
+    }
+
+    .history__dot {
+      background-color: $team-2;
+    }
+  }
+
+  &.no-score {
+    .history__dot {
+      background-color: $no-score;
+    }
+  }
+}
+
+.history__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}

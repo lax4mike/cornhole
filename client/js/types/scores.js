@@ -10,6 +10,7 @@ export const scoresShape = shape({
   team2: arrayOf(number).isRequired
 });
 
+
 // Scores
 export const initialScores = {
   [TEAM1]: [],
@@ -27,11 +28,14 @@ export const addScore = R.curry((teamId, score, scores) => {
   )(scores);
 });
 
+
 // paritally applied
 export const scoreTeam1 = addScore(TEAM1);
 export const scoreTeam2 = addScore(TEAM2);
 export const scoreNone = addScore(null, null);
 
+
+// common reducer for getTotalScore(s)
 const scoreReducer = (tally, n) => {
   // if it goes over 21, back to 11!
   return R.when(R.gt(R.__, 21), () => 11)(tally + n);
@@ -43,6 +47,7 @@ const scoreReducer = (tally, n) => {
 export const getTotalScore = (scores) =>
   R.reduce(scoreReducer, 0)(scores);
 
+
 // given an array of a score for each round, return an array of the
 // total score for each round
 // getTotalScores :: [Number] -> [Number]
@@ -50,11 +55,19 @@ export const getTotalScores = (scores) =>
   R.scan(scoreReducer, 0)(scores);
 
 
-
-// const score1 = scoreTeam1(5, initialScores);
-// // console.log(score1);
-// const score2 = scoreTeam2(10, score1);
-// // console.log(score2);
-// const score3 = scoreTeam1(3, score2);
-// console.log(score3);
-// console.log(getTotalScores(TEAM1, score3));
+// getRoundScores :: Scores -> [{ team, score }]
+export const getRoundScores = (bothScores) => {
+  return R.range(0, bothScores[TEAM1].length).map(i => {
+    const team1Score = bothScores[TEAM1][i];
+    const team2Score = bothScores[TEAM2][i];
+    if (team1Score !== 0){
+      return { team: TEAM1, score: team1Score };
+    }
+    else if (team2Score !== 0){
+      return { team: TEAM2, score: team2Score };
+    }
+    else {
+      return null;
+    }
+  });
+};

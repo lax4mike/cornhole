@@ -4,10 +4,12 @@ import { func } from "prop-types";
 import classNames from "classnames";
 
 import Chart from "./Chart/Chart.jsx";
+import History from "./History/History.jsx";
+import Scores from "./Scores/Scores.jsx";
 import Modal from "./Modal/Modal.jsx";
 
 import {
-  TEAM1, TEAM2, getTotalScore, addScore, scoreNone, scoresShape, initialScores
+  TEAM1, TEAM2, addScore, scoreNone, scoresShape, initialScores
 } from "../types/scores.js";
 
 const teamClass = (teamId) => {
@@ -89,14 +91,6 @@ export default class App extends React.Component {
       </div>
     );
 
-    const hasWon = (teamId) => getTotalScore(scores[teamId]) === 21;
-
-    const winner =
-      (hasWon(TEAM1)) ? TEAM1 :
-      (hasWon(TEAM2)) ? TEAM2 :
-      null;
-
-    const winnerText = <div className="winner">Winner!</div>;
 
     return (
       <div className="app">
@@ -107,31 +101,20 @@ export default class App extends React.Component {
           <Chart {...{ scores }} />
         </div>
 
-        <div className={classNames("teams", { "has-winner": winner})}>
-          <div className="team" onClick={() => !winner && this.enterScore(TEAM1)}>
-            <div className="team__color team--1"></div>
-            {getTotalScore(scores[TEAM1])}
-            {winner === TEAM1 && winnerText}
-          </div>
-
-          {!winner && (
-            <div className="team" onClick={() => !winner && this.scoreNone()}>
-              <div className="team__color team--none">no score</div>
-            </div>
-          )}
-
-          <div className="team" onClick={() => !winner && this.enterScore(TEAM2)}>
-            <div className="team__color team--2"></div>
-            {getTotalScore(scores[TEAM2])}
-            {winner === TEAM2 && winnerText}
-          </div>
+        <div className="app__scores">
+          <Scores
+            scores={scores}
+            enterScore={this.enterScore}
+            scoreNone={this.scoreNone} 
+            resetScores={this.resetScores}
+          />
         </div>
 
-        {winner && (
-          <div className="btn" onClick={() => this.resetScores()}>
-            <div className="btn__text">reset</div>
-          </div>
-        )}
+
+        <div className="app__history">
+          <History {...{ scores }} />
+        </div>
+
 
         <Modal isOpen={scoringTeam !== null} onClose={this.closeModal} title={modalTitle}>
           <div className="score-input">

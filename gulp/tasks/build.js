@@ -2,6 +2,7 @@ const runSequence = require("run-sequence");
 const quench                = require("../quench/quench.js");
 const createCopyTask        = require("../quench/createCopyTask.js");
 const createJsTask          = require("../quench/createJsTask.js");
+const createJestTask        = require("../quench/createJestTask.js");
 const createCssTask         = require("../quench/createCssTask.js");
 const createNodemonTask     = require("../quench/createNodemonTask.js");
 const createBrowserSyncTask = require("../quench/createBrowserSyncTask.js");
@@ -48,6 +49,10 @@ module.exports = function buildTask(projectRoot) {
       ]
     });
 
+    createJestTask("build-jest", {
+      src: clientDir
+    });
+
     createCssTask("build-css", {
       src: [
         `${clientDir}/scss/**/*.scss`,
@@ -79,7 +84,8 @@ module.exports = function buildTask(projectRoot) {
     const buildTasks = [
       "build-js",
       "build-css",
-      "build-copy"
+      "build-copy",
+      "build-jest"
     ];
 
     if (quench.isWatching()){
