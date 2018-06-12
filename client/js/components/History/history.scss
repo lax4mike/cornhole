@@ -11,11 +11,12 @@
   align-items: center;
   justify-content: center;
   padding: 8px 4px;
+  cursor: pointer;
 
-  // &:hover {
-  //   background-color: #eee;
-  //   cursor: pointer;
-  // }
+  // &:hover,
+  &.is-selected {
+    background-color: #eee;
+  }
 
   &.team1 {
     flex-direction: column-reverse;
@@ -27,9 +28,6 @@
   }
 
   &.team2 {
-    &:before {
-      content: "\00a0"; // &nbsp;
-    }
 
     .history__dot {
       background-color: $team-2;
@@ -37,10 +35,25 @@
   }
 
   &.no-score {
+    &:after,
+    &:before {
+      content: "\00a0"; // &nbsp;
+    }
+
     .history__dot {
       background-color: $no-score;
     }
   }
+
+  // make sure spacing is correct
+  // .team1 is column-reverse, so the :before is actualy below
+  &.team1,
+  &.team2 {
+    &:before {
+      content: "\00a0"; // &nbsp;
+    }
+  }
+
 }
 
 .history__dot {

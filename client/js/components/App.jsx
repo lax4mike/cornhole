@@ -28,7 +28,8 @@ export default class App extends React.Component {
   }
 
   state = {
-    scoringTeam: null // null or teamId
+    scoringTeam: null, // null or teamId
+    selectedScore: null
   }
 
   enterScore = (scoringTeam) => {
@@ -60,6 +61,10 @@ export default class App extends React.Component {
     });
   }
 
+  handleScoreSelect = (index) => {
+    this.setState({ selectedScore: index });
+  }
+
   resetScores = () => {
     const { onScore } = this.props;
 
@@ -80,7 +85,7 @@ export default class App extends React.Component {
   render = () => {
 
     const { scores } = this.props;
-    const { scoringTeam } = this.state;
+    const { scoringTeam, selectedScore } = this.state;
 
     const modalTitle = (
       <div className="score-input__title">
@@ -98,21 +103,28 @@ export default class App extends React.Component {
         <h2>Cornhole!</h2>
 
         <div className="app__chart">
-          <Chart {...{ scores }} />
+          <Chart
+            scores={scores}
+            selectedScore={selectedScore}
+          />
         </div>
 
         <div className="app__scores">
           <Scores
             scores={scores}
             enterScore={this.enterScore}
-            scoreNone={this.scoreNone} 
+            scoreNone={this.scoreNone}
             resetScores={this.resetScores}
           />
         </div>
 
 
         <div className="app__history">
-          <History {...{ scores }} />
+          <History
+            scores={scores}
+            onScoreHover={this.handleScoreSelect}
+            selectedScore={selectedScore}
+          />
         </div>
 
 

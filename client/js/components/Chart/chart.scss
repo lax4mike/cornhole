@@ -6,13 +6,24 @@
   background-color: #ecf0f1;
 }
 
+.chart__team1 {
+  .chart__dot {
+    fill: $team-1;
+  }
 
-.team1-path {
-  stroke: $team-1;
+  .chart__path {
+    stroke: $team-1;
+  }
 }
 
-.team2-path {
-  stroke: $team-2;
+.chart__team2 {
+  .chart__dot {
+    fill: $team-2;
+  }
+
+  .chart__path {
+    stroke: $team-2;
+  }
 }
 
 

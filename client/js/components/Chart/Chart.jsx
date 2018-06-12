@@ -3,23 +3,27 @@ import React from "react";
 import createD3Chart from "./d3Chart.js";
 import debounce from "lodash.debounce";
 
+import { number } from "prop-types";
 import { scoresShape } from "../../types/scores.js";
-
 
 
 export default class Chart extends React.Component {
 
   static propTypes = {
-    scores: scoresShape
+    scores: scoresShape,
+    selectedScore: number
   }
 
   componentDidMount = () => {
+    const { selectedScore, scores } = this.props;
     const { width, height } = this.calculateDimensions();
 
     this.d3Chart = createD3Chart({
       el: this.d3Mount.current,
-      scores: this.props.scores,
-      width, height
+      scores,
+      width,
+      height,
+      selectedScore
     });
 
     window.addEventListener("resize", this.resizeToFill);
@@ -32,8 +36,10 @@ export default class Chart extends React.Component {
 
   componentDidUpdate = (prevProps, prevState, snapshot) => {
 
-    // only update the viz if the scores have changed
-    if (prevProps.scores !== this.props.scores){
+    const changed = key => prevProps[key] !== this.props[key];
+
+    // only update the viz if the props have changed
+    if (changed("scores") || changed("selectedScore")){
       this.d3Chart.setState(this.props);
     }
   }

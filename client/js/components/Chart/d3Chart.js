@@ -1,6 +1,6 @@
 import R from "ramda";
 import { select } from "d3-selection";
-import { line, curveStepBefore } from "d3-shape";
+import { line, curveStepBefore, curveStepAfter } from "d3-shape";
 import { scaleLinear } from "d3-scale";
 import { axisBottom, axisLeft } from "d3-axis";
 import { checkPropTypes, object } from "prop-types";
@@ -20,7 +20,7 @@ export default function createChart(props) {
 
     state = R.merge(state, newState);
 
-    render(newState);
+    render(state);
   }
 
   init(props);
@@ -47,24 +47,21 @@ export default function createChart(props) {
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     g.append("g")
-      .attr("class", "axis chart__x-axis");
+      .attr("class", "chart__axis chart__x-axis");
 
     g.append("g")
-      .attr("class", "axis chart__y-axis");
+      .attr("class", "chart__axis chart__y-axis");
 
-    g.append("path")
-      .attr("class", "team1-path")
-      .attr("fill", "none")
-      .attr("stroke-linejoin", "round")
-      .attr("stroke-linecap", "round")
-      .attr("stroke-width", 3);
-
-    g.append("path")
-      .attr("class", "team2-path")
-      .attr("fill", "none")
-      .attr("stroke-linejoin", "round")
-      .attr("stroke-linecap", "round")
-      .attr("stroke-width", 3);
+    [TEAM1, TEAM2].forEach(teamId => {
+      g.append("g")
+        .attr("class", `chart__${teamId}`)
+        .append("path")
+        .attr("class", "chart__path")
+        .attr("fill", "none")
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round")
+        .attr("stroke-width", 3);
+    });
 
 
     setState({
@@ -75,6 +72,40 @@ export default function createChart(props) {
     });
   }
 
+
+  function renderLine(teamId, { xScale, yScale }) {
+
+    const { g, scores } = state;
+
+    const lineGenerator = line()
+      .x((d, i) => xScale(i))
+      .y((d) => yScale(d))
+      .curve(curveStepAfter);
+
+    const teamTotalScores = getTotalScores(scores[teamId]);
+
+    g.select(`.chart__${teamId} .chart__path`)
+      .transition()
+      .duration(250)
+      .attr("d", lineGenerator(teamTotalScores));
+
+    // const dots = g.select(`.chart__${teamId}`)
+    //   .selectAll(".chart__dot")
+    //   .data(teamTotalScores, (d, i) => i);
+    //
+    // const dotsEnter = dots.enter()
+    //   .append("circle")
+    //   .attr("class", "chart__dot")
+    //   .attr("r", 5)
+    //   .attr("cx", (d, i) => xScale(i))
+    //   .attr("cy", (d, i) => yScale(d));
+    //
+    // dotsEnter.merge(dots)
+    //   .attr("cx", (d, i) => xScale(i))
+    //   .attr("cy", (d, i) => yScale(d));
+    //
+    // dots.exit().remove();
+  }
 
   function render() {
     const { g, scores, el } = state;
@@ -92,27 +123,17 @@ export default function createChart(props) {
       .domain([ 0, 21 ])
       .range([ height, 0 ]);
 
+
+    renderLine(TEAM1, { xScale, yScale });
+    renderLine(TEAM2, { xScale, yScale });
+
     const rounds = xScale.domain()[1];
-
-    const lineGenerator = line()
-      .x((d, i) => xScale(i))
-      .y((d) => yScale(d))
-      .curve(curveStepBefore);
-
-    g.select(".team1-path")
-      .transition()
-      .duration(250)
-      .attr("d", lineGenerator(getTotalScores(scores[TEAM1])));
-
-    g.select(".team2-path")
-      .transition()
-      .duration(250)
-      .attr("d", lineGenerator(getTotalScores(scores[TEAM2])));
 
     g.select(".chart__x-axis")
       .attr("transform", `translate(0, ${height})`)
       .call(
         axisBottom(xScale)
+          .tickFormat((d, i) => i === 0 ? "" : i)
           .tickPadding(10)
           .ticks(rounds > 10 ? 10 : rounds)
       );
