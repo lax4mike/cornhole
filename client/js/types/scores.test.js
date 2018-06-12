@@ -1,45 +1,52 @@
 /* global test, expect */
 
 import {
-  addScore, scoreNone, getTotalScore, getTotalScores, getRoundScores,
+  scoreTeam, scoreNone, getTotalScoreFor, getTotalScoresFor,
   TEAM1, TEAM2
 } from "./scores.js";
 
 
-test("addScore", () => {
-  const startScores = { "team1": [ 2 ], "team2": [ 0 ] };
-  const targetScores1 = { "team1": [ 2, 3 ], "team2": [ 0, 0 ] };
-  const targetScores2 = { "team1": [ 2, 0 ], "team2": [ 0, 3 ] };
+const manyScores = [
+  { team: "team1", score: 2 },
+  { team: "team2", score: 3 },
+  null,
+  { team: "team1", score: 2 },
+  { team: "team1", score: 1 },
+  null,
+  { team: "team2", score: 6 },
+  { team: "team1", score: 1 }
+];
 
-  expect(addScore(TEAM1, 3, startScores)).toEqual(targetScores1);
-  expect(addScore(TEAM2, 3, startScores)).toEqual(targetScores2);
+test("scoreTeam", () => {
+  const startScores = [ { team: "team1", score: 2 } ];
+  const targetScores1 = [
+    { team: "team1", score: 2 },
+    { team: "team1", score: 3 }
+  ];
+  const targetScores2 = [
+    { team: "team1", score: 2 },
+    { team: "team2", score: 3 }
+  ];
+
+  expect(scoreTeam(TEAM1, 3, startScores)).toEqual(targetScores1);
+  expect(scoreTeam(TEAM2, 3, startScores)).toEqual(targetScores2);
 });
 
 
 test("scoreNone", () => {
-  const startScores = { "team1": [ 2 ], "team2": [ 0 ] };
-  const targetScores = { "team1": [ 2, 0 ], "team2": [ 0, 0 ] };
+  const startScores = [ { team: "team1", score: 2 } ];
+  const targetScores = [ { team: "team1", score: 2 }, null ];
   expect(scoreNone(startScores)).toEqual(targetScores);
 });
 
 
-test("getTotalScore", () => {
-  expect(getTotalScore([null, 0, 2, 0, 2, 3, 0, null])).toEqual(7);
+test("getTotalScoreFor", () => {
+  expect(getTotalScoreFor(TEAM1, manyScores)).toEqual(6);
+  expect(getTotalScoreFor(TEAM2, manyScores)).toEqual(9);
 });
 
 
-test("getTotalScores", () => {
-  expect(getTotalScores([5, 0, 3, 1, 2, 3])).toEqual([0, 5, 5, 8, 9, 11, 14]);
-});
-
-
-test("getRoundScores", () => {
-  const scores = { "team1": [ 2, 0, 0, 0 ], "team2": [ 0, 0, 4, 5 ] };
-  const target = [
-    { team: "team1", score: 2 },
-    null,
-    { team: "team2", score: 4 },
-    { team: "team2", score: 5 }
-  ];
-  expect(getRoundScores(scores)).toEqual(target);
+test("getTotalScoresFor", () => {
+  expect(getTotalScoresFor(TEAM1, manyScores)).toEqual([0, 2, 2, 2, 4, 5, 5, 5, 6]);
+  expect(getTotalScoresFor(TEAM2, manyScores)).toEqual([0, 0, 3, 3, 3, 3, 3, 9, 9]);
 });

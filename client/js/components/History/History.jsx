@@ -1,12 +1,12 @@
 import React from "react";
 import classNames from "classnames";
-import { func, number } from "prop-types";
-import { scoresShape, getRoundScores } from "../../types/scores.js";
+import { arrayOf, func, number } from "prop-types";
+import { scoreShape } from "../../types/scores.js";
 
 export default class History extends React.Component {
 
   static propTypes = {
-    scores: scoresShape.isRequired,
+    scores: arrayOf(scoreShape).isRequired,
     onScoreHover: func,
     selectedScore: number
   }
@@ -20,7 +20,8 @@ export default class History extends React.Component {
 
     const { scores, selectedScore } = this.props;
 
-    const history = getRoundScores(scores);
+    // TODO make history have negative points for back to 11
+    const history = scores;
 
     return (
       <div className="history">

@@ -1,13 +1,13 @@
 import R from "ramda";
 import { select } from "d3-selection";
-import { line, curveStepBefore, curveStepAfter } from "d3-shape";
+import { line, curveStepAfter } from "d3-shape";
 import { scaleLinear } from "d3-scale";
 import { axisBottom, axisLeft } from "d3-axis";
-import { checkPropTypes, object } from "prop-types";
-import { scoresShape } from "../../types/scores.js";
+import { checkPropTypes, arrayOf, object } from "prop-types";
+import { scoreShape } from "../../types/scores.js";
 import "d3-transition";
 
-import { getTotalScores, TEAM1, TEAM2 } from "../../types/scores.js";
+import { getTotalScoresFor, TEAM1, TEAM2 } from "../../types/scores.js";
 
 export default function createChart(props) {
 
@@ -30,7 +30,7 @@ export default function createChart(props) {
 
     checkPropTypes({
       el: object.isRequired,
-      scores: scoresShape.isRequired
+      scores: arrayOf(scoreShape).isRequired
     }, props, "prop", "d3Chart");
 
     const { el } = props;
@@ -82,7 +82,7 @@ export default function createChart(props) {
       .y((d) => yScale(d))
       .curve(curveStepAfter);
 
-    const teamTotalScores = getTotalScores(scores[teamId]);
+    const teamTotalScores = getTotalScoresFor(teamId, scores);
 
     g.select(`.chart__${teamId} .chart__path`)
       .transition()
@@ -116,7 +116,7 @@ export default function createChart(props) {
       .attr("height", state.height);
 
     const xScale = scaleLinear()
-      .domain([ 0, R.max(scores[TEAM1].length, 8) ])
+      .domain([ 0, R.max(scores.length, 8) ])
       .rangeRound([ 0, width ]);
 
     const yScale = scaleLinear()

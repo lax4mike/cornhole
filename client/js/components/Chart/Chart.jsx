@@ -3,14 +3,14 @@ import React from "react";
 import createD3Chart from "./d3Chart.js";
 import debounce from "lodash.debounce";
 
-import { number } from "prop-types";
-import { scoresShape } from "../../types/scores.js";
+import { arrayOf, number } from "prop-types";
+import { scoreShape } from "../../types/scores.js";
 
 
 export default class Chart extends React.Component {
 
   static propTypes = {
-    scores: scoresShape,
+    scores: arrayOf(scoreShape).isRequired,
     selectedScore: number
   }
 

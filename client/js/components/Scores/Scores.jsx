@@ -1,12 +1,12 @@
 import React from "react";
 import classNames from "classnames";
-import { func } from "prop-types";
+import { arrayOf, func } from "prop-types";
 
-import { TEAM1, TEAM2, getTotalScore, scoresShape } from "../../types/scores.js";
+import { TEAM1, TEAM2, getTotalScoreFor, scoreShape } from "../../types/scores.js";
 
 
 const propTypes = {
-  scores: scoresShape.isRequired,
+  scores: arrayOf(scoreShape).isRequired,
   enterScore: func.isRequired,
   scoreNone: func.isRequired,
   resetScores: func.isRequired
@@ -16,7 +16,7 @@ const Scores = (props) => {
 
   const { scores, enterScore, scoreNone, resetScores } = props;
 
-  const hasWon = (teamId) => getTotalScore(scores[teamId]) === 21;
+  const hasWon = (teamId) => getTotalScoreFor(teamId, scores) === 21;
 
   const winner =
     (hasWon(TEAM1)) ? TEAM1 :
@@ -30,7 +30,7 @@ const Scores = (props) => {
       <div className={classNames("teams", { "has-winner": winner})}>
         <div className="team" onClick={() => !winner && enterScore(TEAM1)}>
           <div className="team__color team--1"></div>
-          {getTotalScore(scores[TEAM1])}
+          {getTotalScoreFor(TEAM1, scores)}
           {winner === TEAM1 && winnerText}
         </div>
 
@@ -42,7 +42,7 @@ const Scores = (props) => {
 
         <div className="team" onClick={() => !winner && enterScore(TEAM2)}>
           <div className="team__color team--2"></div>
-          {getTotalScore(scores[TEAM2])}
+          {getTotalScoreFor(TEAM2, scores)}
           {winner === TEAM2 && winnerText}
         </div>
       </div>

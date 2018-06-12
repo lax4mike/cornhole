@@ -1,6 +1,6 @@
 import React from "react";
 import R from "ramda";
-import { func } from "prop-types";
+import { array, func } from "prop-types";
 import classNames from "classnames";
 
 import Chart from "./Chart/Chart.jsx";
@@ -9,7 +9,7 @@ import Scores from "./Scores/Scores.jsx";
 import Modal from "./Modal/Modal.jsx";
 
 import {
-  TEAM1, TEAM2, addScore, scoreNone, scoresShape, initialScores
+  TEAM1, TEAM2, scoreTeam, scoreNone, initialScores
 } from "../types/scores.js";
 
 const teamClass = (teamId) => {
@@ -23,7 +23,7 @@ const teamClass = (teamId) => {
 export default class App extends React.Component {
 
   static propTypes = {
-    scores: scoresShape.isRequired,
+    scores: array.isRequired,
     onScore: func.isRequired
   }
 
@@ -44,7 +44,7 @@ export default class App extends React.Component {
     const { scoringTeam } = this.state;
     const { onScore, scores  } = this.props;
 
-    onScore(addScore(scoringTeam, n, scores));
+    onScore(scoreTeam(scoringTeam, n, scores));
 
     this.setState({
       scoringTeam: null
