@@ -1,14 +1,19 @@
 @import "../../../scss/_variables.scss";
 
+
 .chart {
-  height: 300px;
-  width: 500px;
-  background-color: #ecf0f1;
+  background-color: rgba(white, 1);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: $max-width;
 }
 
 .chart__team1 {
   .chart__dot {
     fill: $team-1;
+    stroke: rgba($team-1, 0.5);
   }
 
   .chart__path {
@@ -19,6 +24,7 @@
 .chart__team2 {
   .chart__dot {
     fill: $team-2;
+    stroke: rgba($team-2, 0.5);
   }
 
   .chart__path {

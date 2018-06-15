@@ -4,16 +4,17 @@ import { line, curveStepAfter } from "d3-shape";
 import { scaleLinear } from "d3-scale";
 import { axisBottom, axisLeft } from "d3-axis";
 import { checkPropTypes, arrayOf, object } from "prop-types";
-import { scoreShape } from "../../types/scores.js";
 import "d3-transition";
 
-import { getTotalScoresFor, TEAM1, TEAM2 } from "../../types/scores.js";
+import { scoreShape, getTotalScoresFor, TEAM1, TEAM2 } from "../../types/scores.js";
+
+const DURATION = 500;
 
 export default function createChart(props) {
 
 
   let state = {
-    margin: { top: 20, right: 20, bottom: 40, left: 40 }
+    margin: { top: 30, right: 30, bottom: 40, left: 40 }
   };
 
   function setState(newState){
@@ -86,25 +87,36 @@ export default function createChart(props) {
 
     g.select(`.chart__${teamId} .chart__path`)
       .transition()
-      .duration(250)
+      .duration(DURATION)
       .attr("d", lineGenerator(teamTotalScores));
 
-    // const dots = g.select(`.chart__${teamId}`)
-    //   .selectAll(".chart__dot")
-    //   .data(teamTotalScores, (d, i) => i);
-    //
-    // const dotsEnter = dots.enter()
-    //   .append("circle")
-    //   .attr("class", "chart__dot")
-    //   .attr("r", 5)
-    //   .attr("cx", (d, i) => xScale(i))
-    //   .attr("cy", (d, i) => yScale(d));
-    //
-    // dotsEnter.merge(dots)
-    //   .attr("cx", (d, i) => xScale(i))
-    //   .attr("cy", (d, i) => yScale(d));
-    //
-    // dots.exit().remove();
+    const dots = g.select(`.chart__${teamId}`)
+      .selectAll(".chart__dot")
+      .data(teamTotalScores, (d, i) => i);
+
+    const dotsEnter = dots.enter()
+      .append("circle")
+      .attr("class", "chart__dot")
+      .attr("r", d => d === 21 ? 10 : 5)
+      .attr("stroke-width", d => d === 21 ? 40 : 5)
+      .attr("cx", (d, i) => xScale(i))
+      .attr("cy", (d, i) => yScale(d));
+
+    dotsEnter.merge(dots)
+      .attr("opacity", (d, i) => {
+        // only show the dot when this team scored
+        const didScore = R.path([i-1, "team"], scores) === teamId;
+        const isLast = i === scores.length;
+        const isFirst = i === 0;
+
+        return didScore || isLast || isFirst ? 1 : 0;
+      })
+      .transition()
+      .duration(DURATION)
+      .attr("cx", (d, i) => xScale(i))
+      .attr("cy", (d, i) => yScale(d));
+
+    dots.exit().remove();
   }
 
   function render() {
@@ -123,9 +135,17 @@ export default function createChart(props) {
       .domain([ 0, 21 ])
       .range([ height, 0 ]);
 
+    const yScale1 = scaleLinear()
+      .domain([ 0, 21 ])
+      .range([ height-2, 0-2 ]);
 
-    renderLine(TEAM1, { xScale, yScale });
-    renderLine(TEAM2, { xScale, yScale });
+    const yScale2 = scaleLinear()
+      .domain([ 0, 21 ])
+      .range([ height+1, 0+1 ]);
+
+
+    renderLine(TEAM1, { xScale, yScale: yScale1 });
+    renderLine(TEAM2, { xScale, yScale: yScale2 });
 
     const rounds = xScale.domain()[1];
 

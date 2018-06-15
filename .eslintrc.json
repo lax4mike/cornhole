@@ -54,36 +54,7 @@
         "component": true,
         "html": false
     }],
-    "react/sort-comp": [1, {
-      "order": [
-        "lifecycle",
-        "everything-else",
-        "render"
-      ],
-      "groups": {
-        "lifecycle": [
-          "displayName",
-          "propTypes",
-          "contextTypes",
-          "childContextTypes",
-          "mixins",
-          "statics",
-          "defaultProps",
-          "constructor",
-          "getDefaultProps",
-          "getInitialState",
-          "state",
-          "getChildContext",
-          "componentWillMount",
-          "componentDidMount",
-          "componentWillUnmount",
-          "componentWillReceiveProps",
-          "shouldComponentUpdate",
-          "componentWillUpdate",
-          "componentDidUpdate"
-        ]
-      }
-    }],
+    "react/sort-comp": 1,
     "no-alert": 0,
     "no-array-constructor": 0,
     "no-bitwise": 1,

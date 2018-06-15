@@ -53,10 +53,10 @@ export default class Chart extends React.Component {
   }, 100)
 
   calculateDimensions = () => {
-    const { clientWidth } = this.d3Mount.current.parentNode;
+    const { clientWidth } = this.d3Mount.current;
 
-    const width = R.min(clientWidth, 700);
-    const height = R.max(width * (1/2), 300);
+    const width = clientWidth;
+    const height = R.max(clientWidth * (1/2), 300);
 
     return { width, height };
   }
@@ -66,7 +66,7 @@ export default class Chart extends React.Component {
 
   render = () => {
     return (
-      <div className="js-chart" ref={this.d3Mount}></div>
+      <div className="js-chart chart" ref={this.d3Mount}></div>
     );
   }
 }

@@ -2,15 +2,42 @@
 
 .teams {
   display: flex;
+  justify-content: center;
   align-items: center;
   padding: 12px;
 
   &.has-winner {
     align-items: flex-start;
+  }
+}
 
-    .team {
-      width: 175px;
-    }
+$loser: scale(0.7);
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+$winner: 1000ms ease-in-out 1s pulse infinite;
+
+.winner-team2 {
+  .team--1 {
+    transform: $loser;
+  }
+
+  .team--2 {
+    animation: $winner;
+  }
+}
+
+.winner-team1 {
+  .team--1 {
+    animation: $winner;
+  }
+
+  .team--2 {
+    transform: $loser;
   }
 }
 
@@ -25,6 +52,8 @@
 
   border-radius: 6px;
 
+  transition: all 500ms;
+
   // disable hover states if there is a winner
   .teams:not(.has-winner) &:hover {
     background-color: #eee;
@@ -34,25 +63,19 @@
 }
 
 .team__color {
-  height: 24px;
+  height: 32px;
   width: 64px;
   background-color: #eee;
   border-radius: 24px;
 
+  .team.team--1 &,
   &.team--1 {
     background-color: $team-1;
   }
 
+  .team.team--2 &,
   &.team--2 {
     background-color: $team-2;
-  }
-
-  &.team--none {
-    padding: 4px 8px;
-    background-color: $no-score;
-    font-size: 14px;
-    line-height: 24px;
-    text-align: center;
   }
 
 }

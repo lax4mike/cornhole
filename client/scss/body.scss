@@ -1,5 +1,14 @@
+@import "./_variables.scss";
+
+html {
+  height: 100%;
+}
 
 body {
+  display: flex;
+  flex-direction: column;
+
+  min-height: 100%;
   font-family: "Alegreya", "Trebuchet MS", sans-serif;
 
   // mobile phones seem to select text alot, prevent that.
@@ -7,4 +16,19 @@ body {
 
   padding: 0;
   margin: 0;
+
+  &.winner-team1 {
+    background-color: rgba($team-1, 0.7);
+  }
+
+  &.winner-team2 {
+    background-color: rgba($team-2, 0.5);
+  }
+
+  .js-cornhole-mount {
+    flex: auto;
+
+    display: flex;
+    flex-direction: column;
+  }
 }

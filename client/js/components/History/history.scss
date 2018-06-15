@@ -3,6 +3,10 @@
 .history {
   display: flex;
   flex-wrap: wrap;
+
+  background-color: rgba(white, 0.8);
+  border-radius: 6px;
+  padding: 1px 6px;
 }
 
 .history__score {
